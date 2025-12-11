@@ -19,7 +19,7 @@ export async function fetchRevenue() {
     return data;
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_revenue_error", {
+    posthog.captureException("fetch_revenue_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -43,7 +43,7 @@ export async function fetchLatestInvoices() {
     return latestInvoices;
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_latest_invoices_error", {
+    posthog.captureException("fetch_latest_invoices_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -82,7 +82,7 @@ export async function fetchCardData() {
     };
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_card_data_error", {
+    posthog.captureException("fetch_card_data_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -122,7 +122,7 @@ export async function fetchFilteredInvoices(
     return invoices;
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_filtered_invoices_error", {
+    posthog.captureException("fetch_filtered_invoices_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -147,7 +147,7 @@ export async function fetchInvoicesPages(query: string) {
     return totalPages;
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_invoices_pages_error", {
+    posthog.captureException("fetch_invoices_pages_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -176,7 +176,7 @@ export async function fetchInvoiceById(id: string) {
     return invoice[0];
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("fetch_invoice_by_id_error", {
+    posthog.captureException("fetch_invoice_by_id_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     console.error("Database Error:", error);
@@ -197,7 +197,7 @@ export async function fetchCustomers() {
     return customers;
   } catch (err) {
     // Capture the error with PostHog
-    posthog.capture("fetch_customers_error", {
+    posthog.captureException("fetch_customers_error", {
       error: err instanceof Error ? err.message : "Unknown error",
     });
     console.error("Database Error:", err);
@@ -234,7 +234,7 @@ export async function fetchFilteredCustomers(query: string) {
     return customers;
   } catch (err) {
     // Capture the error with PostHog
-    posthog.capture("fetch_filtered_customers_error", {
+    posthog.captureException("fetch_filtered_customers_error", {
       error: err instanceof Error ? err.message : "Unknown error",
     });
     console.error("Database Error:", err);

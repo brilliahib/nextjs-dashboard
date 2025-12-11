@@ -65,7 +65,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
-    posthog.capture("create_invoice_error", {
+    posthog.captureException("create_invoice_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     return {
@@ -106,7 +106,7 @@ export async function updateInvoice(
       WHERE id = ${id}
     `;
   } catch (error) {
-    posthog.capture("update_invoice_error", {
+    posthog.captureException("update_invoice_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     // If a database error occurs, return a more specific error.
@@ -132,11 +132,11 @@ export async function authenticate(
     await signIn("credentials", formData);
   } catch (error) {
     // Capture the error with PostHog
-    posthog.capture("authentication_error", {
+    posthog.captureException("authentication_error", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     if (error instanceof AuthError) {
-      posthog.capture("authentication_error", {
+      posthog.captureException("authentication_error", {
         error: error.message,
       });
       // Handle specific authentication errors
