@@ -8,6 +8,7 @@ import {
   Revenue,
 } from "./definitions";
 import { formatCurrency } from "./utils";
+import { posthog } from "posthog-js";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -17,6 +18,10 @@ export async function fetchRevenue() {
 
     return data;
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_revenue_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch revenue data.");
   }
@@ -37,6 +42,10 @@ export async function fetchLatestInvoices() {
     }));
     return latestInvoices;
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_latest_invoices_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the latest invoices.");
   }
@@ -72,6 +81,10 @@ export async function fetchCardData() {
       totalPendingInvoices,
     };
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_card_data_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch card data.");
   }
@@ -108,6 +121,10 @@ export async function fetchFilteredInvoices(
 
     return invoices;
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_filtered_invoices_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoices.");
   }
@@ -129,6 +146,10 @@ export async function fetchInvoicesPages(query: string) {
     const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_invoices_pages_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of invoices.");
   }
@@ -154,6 +175,10 @@ export async function fetchInvoiceById(id: string) {
 
     return invoice[0];
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_invoice_by_id_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoice.");
   }
@@ -171,6 +196,10 @@ export async function fetchCustomers() {
 
     return customers;
   } catch (err) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_customers_error", {
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
     console.error("Database Error:", err);
     throw new Error("Failed to fetch all customers.");
   }
@@ -204,6 +233,10 @@ export async function fetchFilteredCustomers(query: string) {
 
     return customers;
   } catch (err) {
+    // Capture the error with PostHog
+    posthog.capture("fetch_filtered_customers_error", {
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
     console.error("Database Error:", err);
     throw new Error("Failed to fetch customer table.");
   }

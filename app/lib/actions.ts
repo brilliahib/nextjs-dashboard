@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import posthog from "posthog-js";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -64,6 +65,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
+    posthog.capture("create_invoice_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     return {
       message: "Database Error: Failed to Create Invoice.",
     };
@@ -102,6 +106,10 @@ export async function updateInvoice(
       WHERE id = ${id}
     `;
   } catch (error) {
+    posthog.capture("update_invoice_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+    // If a database error occurs, return a more specific error.
     return { message: "Database Error: Failed to Update Invoice." };
   }
 
@@ -123,7 +131,15 @@ export async function authenticate(
   try {
     await signIn("credentials", formData);
   } catch (error) {
+    // Capture the error with PostHog
+    posthog.capture("authentication_error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     if (error instanceof AuthError) {
+      posthog.capture("authentication_error", {
+        error: error.message,
+      });
+      // Handle specific authentication errors
       switch (error.type) {
         case "CredentialsSignin":
           return "Invalid credentials.";

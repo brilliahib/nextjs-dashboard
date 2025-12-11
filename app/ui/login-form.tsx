@@ -11,6 +11,7 @@ import { Button } from "./button";
 import { useActionState } from "react";
 import { authenticate } from "@/app/lib/actions";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -19,6 +20,13 @@ export default function LoginForm() {
     authenticate,
     undefined
   );
+
+  const handleCaptureError = () => {
+    // Capture the error with PostHog
+    posthog.captureException("login_form_error", {
+      error: errorMessage || "Hello, this is a test error",
+    });
+  };
 
   return (
     <form action={formAction} className="space-y-3">
@@ -70,6 +78,14 @@ export default function LoginForm() {
         <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button className="w-full mt-4" aria-disabled={isPending}>
           Log in <ArrowRightIcon className="w-5 h-5 ml-auto text-gray-50" />
+        </Button>
+
+        <Button
+          type="button"
+          onClick={handleCaptureError}
+          className="w-full mt-2 bg-red-600 text-white"
+        >
+          Capture Error to PostHog
         </Button>
         <div
           className="flex items-end h-8 space-x-1"
